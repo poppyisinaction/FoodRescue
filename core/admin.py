@@ -1,0 +1,14 @@
+from django.contrib import admin
+from .models import ContactMessage
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'subject', 'is_resolved', 'created_at')
+    list_filter = ('is_resolved', 'created_at')
+    search_fields = ('name', 'email', 'subject', 'message')
+    actions = ['mark_resolved']
+
+    @admin.action(description="Mark selected messages as Resolved")
+    def mark_resolved(self, request, queryset):
+        queryset.update(is_resolved=True)
