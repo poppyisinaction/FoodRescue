@@ -1,0 +1,494 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FoodRescue – Save Food. Share Hope. Fight Hunger.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container position-relative">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <div class="hero-badge mb-3">
+                    <i class="fa-solid fa-sparkles text-warning"></i>
+                    <span>AI-Powered Food Waste Mitigation Platform</span>
+                </div>
+                <h1 class="hero-title">
+                    Save Food. <br>
+                    <span class="text-success">Share Hope.</span> <br>
+                    <span class="text-accent">Fight Hunger.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    FoodRescue bridges the gap between commercial surplus food from restaurants, hotels, supermarkets, and certified NGOs. Utilizing intelligent real-time matching and FoodRescue AI to feed communities and eliminate landfill waste.
+                </p>
+                <div class="d-flex flex-wrap gap-3 pt-2">
+                    <a href="{% url 'add_donation' %}" class="btn btn-primary btn-lg shadow d-inline-flex align-items-center gap-2">
+                        <i class="fa-solid fa-hand-holding-heart"></i> Donate Food
+                    </a>
+                    <a href="{% url 'available_donations' %}" class="btn btn-outline-primary btn-lg d-inline-flex align-items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> Find Food
+                    </a>
+                    <button type="button" class="btn btn-secondary-light btn-lg d-inline-flex align-items-center gap-2" onclick="document.getElementById('chatbot-toggle-btn').click()">
+                        <i class="fa-solid fa-robot text-success"></i> Ask FoodRescue AI
+                    </button>
+                </div>
+
+                <!-- Trust indicators -->
+                <div class="row mt-5 pt-3 border-top border-secondary border-opacity-50">
+                    <div class="col-sm-4 col-6 mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-shield-check text-success fs-4"></i>
+                            <div>
+                                <h6 class="mb-0 fw-bold">100% Verified</h6>
+                                <small class="text-muted">Certified NGOs</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-6 mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-temperature-arrow-down text-success fs-4"></i>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Food Safety</h6>
+                                <small class="text-muted">Strict Standards</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-12 mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-bolt text-warning fs-4"></i>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Real-Time</h6>
+                                <small class="text-muted">Instant Dispatch</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Interactive Preview Card -->
+            <div class="col-lg-5">
+                <div class="hero-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-danger-subtle text-danger px-3 py-2 fw-semibold">
+                            <i class="fa-solid fa-circle-dot text-danger me-1"></i> Live Surplus Alert
+                        </span>
+                        <span class="small text-muted"><i class="fa-regular fa-clock me-1"></i> Posted Just Now</span>
+                    </div>
+
+                    <div class="rounded-3 overflow-hidden mb-3 position-relative" style="height: 220px; background-color: #2b3933;">
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80" alt="Fresh Healthy Meals" class="w-100 h-100 object-fit-cover">
+                        <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 shadow-sm">
+                            <i class="fa-solid fa-leaf me-1"></i> Pure Vegetarian
+                        </span>
+                    </div>
+
+                    <h5 class="fw-bold text-dark mb-1">60 Portions Deluxe Vegetable Biryani & Raita</h5>
+                    <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot text-success me-1"></i> Grand Celebration Banquet, Andheri East, Mumbai</p>
+
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-3">
+                        <div>
+                            <small class="text-muted d-block">Quantity Available</small>
+                            <span class="fw-bold fs-5 text-dark">60 Meals (24 kg)</span>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted d-block">Consume Before</small>
+                            <span class="fw-bold text-danger">Today, 10:30 PM</span>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'available_donations' %}" class="btn btn-accent w-100 fw-bold py-2 shadow-sm">
+                        <i class="fa-solid fa-hand-holding-hand me-1"></i> Claim Food via NGO Portal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Numbers Section -->
+<section class="py-5 bg-white border-bottom">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-lg-3 col-sm-6">
+                <div class="stat-box">
+                    <div class="stat-number">{{ total_meals_fed|default:"12,850" }}+</div>
+                    <div class="stat-label">Meals Rescued & Fed</div>
+                    <small class="text-muted">Prevented from going to waste</small>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="stat-box" style="border-top-color: #F4A340;">
+                    <div class="stat-number text-accent">{{ active_available_count|default:"18" }}</div>
+                    <div class="stat-label">Active Surplus Batches</div>
+                    <small class="text-muted">Available for immediate pickup</small>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="stat-box">
+                    <div class="stat-number">{{ total_donors|default:"45" }}</div>
+                    <div class="stat-label">Participating Donors</div>
+                    <small class="text-muted">Restaurants, Hotels, Supermarkets</small>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="stat-box" style="border-top-color: #263238;">
+                    <div class="stat-number text-dark">{{ total_ngos|default:"32" }}</div>
+                    <div class="stat-label">Registered NGOs</div>
+                    <small class="text-muted">Verified charitable receivers</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-light">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 fw-semibold">Simple & Transparent</span>
+            <h2 class="display-6 fw-bold mt-2">How FoodRescue Works</h2>
+            <p class="text-muted lead">A seamless 4-step technological bridge connecting surplus food with communities in need.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-circle">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <h5 class="fw-bold">1. List Surplus</h5>
+                    <p class="text-muted small">
+                        Restaurants, caterers, or event organizers upload surplus food details, quantity, photos, and expiry windows in under 60 seconds.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-circle" style="background:#FFF3E0; color:#F4A340;">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+                    <h5 class="fw-bold">2. Real-Time Alert</h5>
+                    <p class="text-muted small">
+                        Nearby registered and verified NGOs instantly receive notifications about newly available meals within their distribution zones.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-circle">
+                        <i class="fa-solid fa-truck-fast"></i>
+                    </div>
+                    <h5 class="fw-bold">3. Claim & Pickup</h5>
+                    <p class="text-muted small">
+                        The NGO submits a claim. The donor accepts, securely reserving the food and coordinating the exact pickup window.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-box">
+                    <div class="feature-icon-circle" style="background:#E3F2FD; color:#1976D2;">
+                        <i class="fa-solid fa-heart-circle-check"></i>
+                    </div>
+                    <h5 class="fw-bold">4. Zero Waste Impact</h5>
+                    <p class="text-muted small">
+                        Food is collected, safely inspected, distributed to shelters, and digitally recorded in our auditable donation history ledger.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Food Donations Section -->
+<section class="py-5 bg-white">
+    <div class="container py-3">
+        <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+            <div>
+                <span class="badge bg-warning-subtle text-warning px-3 py-2 fw-semibold">Urgent Distribution</span>
+                <h2 class="display-6 fw-bold mt-2">Available Food Surplus</h2>
+                <p class="text-muted mb-0">Browse fresh meals ready for NGO pickup right now.</p>
+            </div>
+            <a href="{% url 'available_donations' %}" class="btn btn-outline-primary mt-3 mt-sm-0">
+                View All Available Food <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        {% if featured_donations %}
+            <div class="row g-4">
+                {% for donation in featured_donations %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="food-card">
+                            <div class="food-card-img-wrapper">
+                                {% if donation.image %}
+                                    <img src="{{ donation.image.url }}" alt="{{ donation.food_name }}" class="food-card-img">
+                                {% else %}
+                                    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80" alt="{{ donation.food_name }}" class="food-card-img">
+                                {% endif %}
+                                
+                                <!-- Food type badge -->
+                                {% if donation.food_type == 'VEG' %}
+                                    <span class="food-type-badge food-type-veg">
+                                        <i class="fa-solid fa-circle-dot"></i> Veg
+                                    </span>
+                                {% elif donation.food_type == 'NON_VEG' %}
+                                    <span class="food-type-badge food-type-nonveg">
+                                        <i class="fa-solid fa-drumstick-bite"></i> Non-Veg
+                                    </span>
+                                {% else %}
+                                    <span class="food-type-badge food-type-vegan">
+                                        <i class="fa-solid fa-seedling"></i> Vegan
+                                    </span>
+                                {% endif %}
+
+                                <span class="urgency-badge">
+                                    <i class="fa-regular fa-clock me-1"></i> Exp: {{ donation.expiry_datetime|date:"M d, H:i" }}
+                                </span>
+                            </div>
+
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <span class="card-category-pill">{{ donation.get_category_display }}</span>
+                                <h5 class="fw-bold mb-2">{{ donation.food_name }}</h5>
+                                <p class="text-muted small mb-3 text-truncate-2">{{ donation.description|truncatewords:15 }}</p>
+
+                                <div class="mt-auto pt-2 border-top">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 small">
+                                        <div>
+                                            <i class="fa-solid fa-box text-success me-1"></i>
+                                            <strong>{{ donation.quantity }} {{ donation.unit }}</strong>
+                                        </div>
+                                        <div class="text-muted text-truncate" style="max-width: 140px;">
+                                            <i class="fa-solid fa-location-dot text-muted me-1"></i> {{ donation.pickup_location }}
+                                        </div>
+                                    </div>
+                                    <a href="{% url 'donation_detail' donation.id %}" class="btn btn-primary w-100 btn-sm fw-semibold">
+                                        <i class="fa-solid fa-eye me-1"></i> View & Claim Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="p-5 text-center bg-light rounded-4">
+                <i class="fa-solid fa-bowl-food display-4 text-success mb-3 opacity-50"></i>
+                <h4>No active food listings right now</h4>
+                <p class="text-muted mb-4">Be the first to list fresh surplus meals and make a difference today!</p>
+                <a href="{% url 'add_donation' %}" class="btn btn-primary">
+                    <i class="fa-solid fa-plus-circle me-1"></i> Post Food Donation
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- AI Assistant Feature Highlight -->
+<section class="py-5 bg-gradient" style="background: linear-gradient(135deg, #104c31 0%, #176B45 100%); color: #FFFFFF;">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="badge bg-warning text-dark px-3 py-2 fw-bold mb-3">
+                    <i class="fa-solid fa-robot me-1"></i> Meet FoodRescue AI
+                </span>
+                <h2 class="display-6 fw-bold text-white mb-3">Intelligent Guidance for Safe & Effortless Food Rescue</h2>
+                <p class="text-white-50 lead mb-4">
+                    Equipped with advanced knowledge of food safety guidelines, storage temperatures, shelf life estimation, and step-by-step claiming procedures for NGOs.
+                </p>
+                <ul class="list-unstyled d-flex flex-column gap-2 mb-4">
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-warning"></i>
+                        <span>Immediate answers on hot/cold storage requirements and hygiene protocols.</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-warning"></i>
+                        <span>Automated help for NGOs to draft comprehensive distribution plans.</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-warning"></i>
+                        <span>Rule-based fallback guarantees 24/7 reliability even without internet APIs.</span>
+                    </li>
+                </ul>
+                <button type="button" class="btn btn-accent btn-lg shadow fw-bold" onclick="document.getElementById('chatbot-toggle-btn').click()">
+                    <i class="fa-solid fa-comments me-2"></i> Start Chatting with FoodRescue AI
+                </button>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="bg-white rounded-4 p-4 text-dark shadow-lg">
+                    <div class="d-flex align-items-center gap-3 border-bottom pb-3 mb-3">
+                        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; font-size: 1.3rem;">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">FoodRescue AI Assistant</h6>
+                            <small class="text-success"><i class="fa-solid fa-circle text-success me-1" style="font-size:0.55rem;"></i> Active & Ready</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column gap-3">
+                        <div class="p-3 rounded-3 bg-light text-muted small align-self-start" style="max-width: 85%;">
+                            <strong class="text-dark d-block mb-1">User:</strong>
+                            How long can cooked banquet food be stored before it must be distributed?
+                        </div>
+                        <div class="p-3 rounded-3 bg-success-subtle text-dark small align-self-end border border-success border-opacity-25" style="max-width: 90%;">
+                            <strong class="text-success d-block mb-1"><i class="fa-solid fa-robot me-1"></i> FoodRescue AI:</strong>
+                            Cooked meals should ideally be chilled within 2 hours of preparation and consumed within 4-6 hours if unrefrigerated. Hot foods must stay above 60°C, while chilled items must remain at 4°C or below.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-5 bg-light">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 fw-semibold">Triple Impact</span>
+            <h2 class="display-6 fw-bold mt-2">Why Join FoodRescue?</h2>
+            <p class="text-muted lead">Transforming commercial waste into community nourishment and environmental stewardship.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white">
+                    <div class="rounded-circle bg-success-subtle text-success d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <h5 class="fw-bold">For Food Donors</h5>
+                    <ul class="list-unstyled text-muted small d-flex flex-column gap-2 mt-3 mb-0">
+                        <li><i class="fa-solid fa-check text-success me-2"></i> Eliminate disposal logistics and landfill tipping costs.</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i> Enhance corporate social responsibility (CSR) ratings.</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i> Receive automated digital donation records for audit compliance.</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i> Foster goodwill and community pride among staff.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white">
+                    <div class="rounded-circle bg-warning-subtle text-warning d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                    </div>
+                    <h5 class="fw-bold">For NGOs & Charities</h5>
+                    <ul class="list-unstyled text-muted small d-flex flex-column gap-2 mt-3 mb-0">
+                        <li><i class="fa-solid fa-check text-warning me-2"></i> Access fresh, high-quality nutrition for free.</li>
+                        <li><i class="fa-solid fa-check text-warning me-2"></i> Real-time notifications eliminate missed opportunities.</li>
+                        <li><i class="fa-solid fa-check text-warning me-2"></i> Strict temperature and expiry tracking protects beneficiaries.</li>
+                        <li><i class="fa-solid fa-check text-warning me-2"></i> Transparent race-condition protection ensures fair allocation.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm p-4 rounded-4 bg-white">
+                    <div class="rounded-circle bg-info-subtle text-info d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                        <i class="fa-solid fa-earth-americas"></i>
+                    </div>
+                    <h5 class="fw-bold">For Our Planet</h5>
+                    <ul class="list-unstyled text-muted small d-flex flex-column gap-2 mt-3 mb-0">
+                        <li><i class="fa-solid fa-check text-info me-2"></i> Mitigates dangerous methane emissions from rotting landfills.</li>
+                        <li><i class="fa-solid fa-check text-info me-2"></i> Saves thousands of liters of embedded agricultural water.</li>
+                        <li><i class="fa-solid fa-check text-info me-2"></i> Directly supports UN Sustainable Development Goal 12.3 & Goal 2.</li>
+                        <li><i class="fa-solid fa-check text-info me-2"></i> Fosters circular community economies across cities.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 fw-semibold">Community Voices</span>
+            <h2 class="display-6 fw-bold mt-2">Trusted by Food Leaders & Shelters</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="p-4 rounded-4 bg-light h-100 border border-light-subtle d-flex flex-column">
+                    <div class="text-warning mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-muted fst-italic mb-4 flex-grow-1">
+                        "As a luxury hotel banquet manager, dealing with untouched surplus after 500-guest weddings was heartbreaking. FoodRescue transformed that into 300 warm meals delivered to children's homes within 90 minutes."
+                    </p>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-success text-white fw-bold d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            RK
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Chef Rajesh Kapoor</h6>
+                            <small class="text-muted">Executive Chef, Grand Palace Hotel</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="p-4 rounded-4 bg-light h-100 border border-light-subtle d-flex flex-column">
+                    <div class="text-warning mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-muted fst-italic mb-4 flex-grow-1">
+                        "The FoodRequest reservation system ensures our logistics team never drives out for food that's already claimed. The verification badge and FoodRescue AI safety checks make collaboration 100% dependable."
+                    </p>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            SD
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Sunita Deshmukh</h6>
+                            <small class="text-muted">Operations Director, Aashray Food Bank</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <div class="p-4 rounded-4 bg-light h-100 border border-light-subtle d-flex flex-column">
+                    <div class="text-warning mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-muted fst-italic mb-4 flex-grow-1">
+                        "Our supermarket chain donates bakery items and fresh fruits approaching best-before dates. The platform's dashboard gives us clean audit charts for our annual environmental sustainability report."
+                    </p>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-warning text-white fw-bold d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                            AM
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold">Anand Mehta</h6>
+                            <small class="text-muted">CSR Lead, FreshBazaar Retail</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section class="py-5" style="background-color: #E8F5E9; border-top: 1px solid #C8E6C9;">
+    <div class="container text-center py-4">
+        <h2 class="display-6 fw-bold text-success mb-3">Ready to Turn Food Waste into Community Hope?</h2>
+        <p class="text-muted lead max-w-700 mx-auto mb-4">
+            Join thousands of restaurants, community donors, and charitable organizations creating a hunger-free world.
+        </p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'register' %}?role=DONOR" class="btn btn-primary btn-lg px-4 shadow">
+                <i class="fa-solid fa-store me-2"></i> Register as Food Donor
+            </a>
+            <a href="{% url 'register' %}?role=NGO" class="btn btn-accent btn-lg px-4 shadow">
+                <i class="fa-solid fa-hand-holding-heart me-2"></i> Register as NGO / Receiver
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

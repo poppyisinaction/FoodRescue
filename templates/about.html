@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us – FoodRescue Platform Mission & Impact{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="py-5 bg-white border-bottom">
+    <div class="container text-center">
+        <span class="badge bg-success-subtle text-success px-3 py-2 fw-semibold">Our Purpose & Mission</span>
+        <h1 class="display-5 fw-bold mt-2">Ending Food Waste. Nourishing Communities.</h1>
+        <p class="text-muted lead max-w-700 mx-auto">
+            FoodRescue is an AI-powered technological bridge connecting excess commercial food with verified non-profits to feed those in need and protect our environment.
+        </p>
+    </div>
+</div>
+
+<!-- Mission & Vision Section -->
+<div class="container py-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-lg-6">
+            <h2 class="fw-bold mb-4">Our Vision for a Zero-Waste Future</h2>
+            <p class="text-muted leading-relaxed">
+                Every single day, thousands of metric tons of perfectly wholesome, fresh food are discarded by restaurants, banquets, hotels, and supermarkets due to strict aesthetic standards, sudden cancellations, or end-of-day surplus. Simultaneously, millions of vulnerable families and children sleep hungry.
+            </p>
+            <p class="text-muted leading-relaxed">
+                <strong>FoodRescue</strong> was architected as a comprehensive solution: providing a streamlined digital ecosystem where food donors and certified charitable organizations interact in real time with automated race-condition locks, temperature safety guidelines, and built-in artificial intelligence.
+            </p>
+            <div class="row g-3 mt-3">
+                <div class="col-sm-6">
+                    <div class="p-3 rounded-3 bg-light border-start border-4 border-success">
+                        <h6 class="fw-bold mb-1">Our Mission</h6>
+                        <small class="text-muted">Ensure zero edible food reaches landfills when a hungry mouth exists within reach.</small>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-3 rounded-3 bg-light border-start border-4 border-warning">
+                        <h6 class="fw-bold mb-1">Our Vision</h6>
+                        <small class="text-muted">Empower every metropolitan city with digitized, verifiable community nourishment networks.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="position-relative">
+                <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=700&q=80" alt="Feeding Community" class="rounded-4 shadow-lg w-100 object-fit-cover" style="height: 380px;">
+                <div class="position-absolute bottom-0 end-0 bg-white p-3 rounded-3 shadow m-3 border">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-trophy text-warning fs-3"></i>
+                        <div>
+                            <span class="d-block fw-bold text-dark">BSc IT Research Project</span>
+                            <small class="text-muted">Advanced Web & AI Implementation</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Food Wastage Crisis Section -->
+<section class="py-5 bg-light">
+    <div class="container py-3">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-danger-subtle text-danger px-3 py-2 fw-semibold">The Problem</span>
+            <h2 class="display-6 fw-bold mt-2">The Dual Crisis of Waste & Hunger</h2>
+            <p class="text-muted">Understanding the severe human and ecological costs of uncoordinated food management.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 p-4 border-0 shadow-sm rounded-4 text-center">
+                    <div class="text-danger mb-3 fs-1">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="fw-bold text-danger">40% of Food Wasted</h3>
+                    <p class="text-muted small mt-2">
+                        According to global reports, up to 40% of all food produced never reaches human stomachs, discarded across post-harvest, retail, and hospitality sectors.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 p-4 border-0 shadow-sm rounded-4 text-center">
+                    <div class="text-warning mb-3 fs-1">
+                        <i class="fa-solid fa-hands-holding-child"></i>
+                    </div>
+                    <h3 class="fw-bold text-warning">194M+ Undernourished</h3>
+                    <p class="text-muted small mt-2">
+                        Over 190 million people face chronic hunger daily. Bridging just 15% of hospitality waste can feed millions of children every year.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-12">
+                <div class="card h-100 p-4 border-0 shadow-sm rounded-4 text-center">
+                    <div class="text-success mb-3 fs-1">
+                        <i class="fa-solid fa-smog"></i>
+                    </div>
+                    <h3 class="fw-bold text-success">8-10% Global Emissions</h3>
+                    <p class="text-muted small mt-2">
+                        Decomposing food in municipal landfills releases potent methane gas, contributing significantly to global greenhouse emissions and climate crisis.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How FoodRescue Solves It -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <span class="badge bg-success-subtle text-success px-3 py-2 fw-semibold">The Technical Solution</span>
+            <h2 class="display-6 fw-bold mt-2">Engineered for Rapid Coordination</h2>
+            <p class="text-muted">Key platform innovations that make FoodRescue effective where older systems failed.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="fs-2 text-success mb-3"><i class="fa-solid fa-bolt"></i></div>
+                    <h5 class="fw-bold">Race-Condition Protection</h5>
+                    <p class="text-muted small mb-0">Database transaction locks prevent multiple NGOs from arriving for the same batch, ensuring dependable logistics.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="fs-2 text-success mb-3"><i class="fa-solid fa-robot"></i></div>
+                    <h5 class="fw-bold">FoodRescue AI Assistant</h5>
+                    <p class="text-muted small mb-0">Built-in AI provides immediate advice on storage temperatures, shelf life calculations, and food safety protocols.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="fs-2 text-success mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h5 class="fw-bold">Certified Verification</h5>
+                    <p class="text-muted small mb-0">Strict admin verification badges ensure only legitimate charitable entities and hygienic food providers participate.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="fs-2 text-success mb-3"><i class="fa-solid fa-chart-pie"></i></div>
+                    <h5 class="fw-bold">Auditable Analytics</h5>
+                    <p class="text-muted small mb-0">Complete historical tracking provides corporate donors with quantifiable CSR and environmental ESG metrics.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to action -->
+<div class="container pb-5">
+    <div class="p-5 rounded-4 bg-primary text-white text-center shadow-lg">
+        <h2 class="fw-bold mb-3">Be Part of the Solution</h2>
+        <p class="lead text-white-50 max-w-700 mx-auto mb-4">
+            Whether you are a five-star hotel with nightly banquet surplus or a grassroots community shelter, your participation saves lives.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'register' %}" class="btn btn-accent btn-lg px-4 fw-bold">Join FoodRescue Today</a>
+            <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg px-4">Contact Our Team</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

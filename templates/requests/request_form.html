@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Claim Surplus – {{ donation.food_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="form-card shadow-lg">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-warning-subtle text-warning px-3 py-2 fw-semibold">
+                        <i class="fa-solid fa-hand-holding-heart me-1"></i> NGO Food Claim Form
+                    </span>
+                </div>
+                <h3 class="fw-bold mb-1">Request Food Batch</h3>
+                <p class="text-muted small mb-4">You are submitting a claim for <strong>{{ donation.food_name }}</strong> ({{ donation.quantity }} {{ donation.unit }}).</p>
+
+                <div class="p-3 rounded-3 bg-light mb-4 border">
+                    <div class="row g-2 small">
+                        <div class="col-6"><strong>Donor:</strong> {{ donation.donor.profile.organization_name|default:donation.donor.username }}</div>
+                        <div class="col-6"><strong>Dietary Type:</strong> {{ donation.get_food_type_display }}</div>
+                        <div class="col-6"><strong>Location:</strong> {{ donation.pickup_location }}</div>
+                        <div class="col-6"><strong>Consume By:</strong> <span class="text-danger">{{ donation.expiry_datetime|date:"M d, h:i A" }}</span></div>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Beneficiary Details & Distribution Plan <span class="text-danger">*</span></label>
+                        <textarea name="request_message" rows="4" class="form-control" placeholder="Explain where this food will be distributed (e.g. 50 children at Sunshine Orphanage), expected consumption time, and transport vehicle details..." required></textarea>
+                        <small class="text-muted">A clear distribution plan increases the likelihood that the donor accepts your claim.</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Estimated Pickup Time <span class="text-danger">*</span></label>
+                        <input type="text" name="estimated_pickup_time" class="form-control" placeholder="e.g. Today at 4:30 PM" required>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-accent btn-lg fw-bold px-4 shadow">
+                            <i class="fa-solid fa-paper-plane me-2"></i> Confirm & Submit Request
+                        </button>
+                        <a href="{% url 'donation_detail' donation.id %}" class="btn btn-outline-secondary btn-lg">
+                            Back
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

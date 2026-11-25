@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Donate Food Surplus – FoodRescue{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Main Form -->
+        <div class="col-lg-8">
+            <div class="form-card shadow-lg">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-success-subtle text-success px-3 py-2 fw-semibold">
+                        <i class="fa-solid fa-hand-holding-heart me-1"></i> Food Donor Portal
+                    </span>
+                </div>
+                <h3 class="fw-bold mb-1">List Surplus Food for Donation</h3>
+                <p class="text-muted small mb-4">Provide accurate preparation, quantity, and expiry details to ensure safe and prompt NGO collection.</p>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Food Core Info -->
+                    <h6 class="fw-bold text-success border-bottom pb-2 mb-3">1. Food Item Details</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label">Food Title / Item Name <span class="text-danger">*</span></label>
+                            {{ form.food_name }}
+                            {% if form.food_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.food_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Category <span class="text-danger">*</span></label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Dietary Type <span class="text-danger">*</span></label>
+                            {{ form.food_type }}
+                            {% if form.food_type.errors %}
+                                <div class="text-danger small mt-1">{{ form.food_type.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Quantity <span class="text-danger">*</span></label>
+                            {{ form.quantity }}
+                            {% if form.quantity.errors %}
+                                <div class="text-danger small mt-1">{{ form.quantity.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Unit of Measurement <span class="text-danger">*</span></label>
+                            {{ form.unit }}
+                            {% if form.unit.errors %}
+                                <div class="text-danger small mt-1">{{ form.unit.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Detailed Description & Ingredients <span class="text-danger">*</span></label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Storage Requirements <span class="text-danger">*</span></label>
+                            {{ form.storage_requirements }}
+                            {% if form.storage_requirements.errors %}
+                                <div class="text-danger small mt-1">{{ form.storage_requirements.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Safety & Timelines -->
+                    <h6 class="fw-bold text-success border-bottom pb-2 mb-3">2. Safety Timelines & Expiry</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Preparation Date & Time <span class="text-danger">*</span></label>
+                            {{ form.preparation_datetime }}
+                            {% if form.preparation_datetime.errors %}
+                                <div class="text-danger small mt-1">{{ form.preparation_datetime.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Expiry / Best Before Date & Time <span class="text-danger">*</span></label>
+                            {{ form.expiry_datetime }}
+                            {% if form.expiry_datetime.errors %}
+                                <div class="text-danger small mt-1">{{ form.expiry_datetime.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Pickup Logistics -->
+                    <h6 class="fw-bold text-success border-bottom pb-2 mb-3">3. Pickup Logistics & Contact</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label">Exact Pickup Location / Address <span class="text-danger">*</span></label>
+                            {{ form.pickup_location }}
+                            {% if form.pickup_location.errors %}
+                                <div class="text-danger small mt-1">{{ form.pickup_location.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Available Pickup Hours / Window <span class="text-danger">*</span></label>
+                            {{ form.pickup_time }}
+                            {% if form.pickup_time.errors %}
+                                <div class="text-danger small mt-1">{{ form.pickup_time.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Person Name</label>
+                            {{ form.contact_person }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Phone Number</label>
+                            {{ form.contact_phone }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Food Photo / Packaging Image</label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="text-danger small mt-1">{{ form.image.errors.0 }}</div>
+                            {% endif %}
+                            <small class="text-muted">Uploading a clear photo helps NGOs verify packaging and portion size faster.</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold px-4 shadow">
+                            <i class="fa-solid fa-cloud-arrow-up me-2"></i> Submit & Publish Food Donation
+                        </button>
+                        <a href="{% url 'donor_dashboard' %}" class="btn btn-outline-secondary btn-lg">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sidebar Guidelines -->
+        <div class="col-lg-4">
+            <div class="p-4 rounded-4 bg-white border shadow-sm mb-4">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-temperature-three-quarters text-danger me-2"></i> Food Safety Protocols</h5>
+                <ul class="list-unstyled text-muted small d-flex flex-column gap-2 mb-0">
+                    <li class="d-flex align-items-start gap-2">
+                        <i class="fa-solid fa-circle-check text-success mt-1"></i>
+                        <span><strong>Hot Foods:</strong> Must be maintained above 60°C until handed over or properly cooled within 2 hours.</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2">
+                        <i class="fa-solid fa-circle-check text-success mt-1"></i>
+                        <span><strong>Chilled Items:</strong> Keep dairy, meats, and prepared salads refrigerated at 4°C or below.</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2">
+                        <i class="fa-solid fa-circle-check text-success mt-1"></i>
+                        <span><strong>Airtight Packaging:</strong> Pack food into clean food-grade foil, containers, or sealed boxes.</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-warning mt-1"></i>
+                        <span><strong>No Spoiled Food:</strong> Never donate food that has been exposed to unhygienic conditions or shows discoloration.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Quick AI Assistant Callout -->
+            <div class="p-4 rounded-4 bg-success text-white shadow-sm">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="fa-solid fa-robot fs-4 text-warning"></i>
+                    <h6 class="fw-bold mb-0">Unsure about shelf life?</h6>
+                </div>
+                <p class="small text-white-50 mb-3">
+                    Click the floating assistant at the bottom right to ask <strong>FoodRescue AI</strong> about shelf life guidelines for any cuisine.
+                </p>
+                <button type="button" class="btn btn-light btn-sm fw-bold w-100 text-success" onclick="document.getElementById('chatbot-toggle-btn').click()">
+                    Ask FoodRescue AI Now
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

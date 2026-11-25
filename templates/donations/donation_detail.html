@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ donation.food_name }} – FoodRescue Donation Details{% endblock %}
+
+{% block content %}
+<div class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1 small">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-success text-decoration-none">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'available_donations' %}" class="text-success text-decoration-none">Available Food</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ donation.food_name|truncatewords:4 }}</li>
+                    </ol>
+                </nav>
+                <h1 class="h2 fw-bold mb-0">{{ donation.food_name }}</h1>
+            </div>
+
+            <!-- Status Indicator -->
+            <div class="mt-2 mt-sm-0">
+                {% if donation.status == 'AVAILABLE' %}
+                    <span class="badge badge-status-available px-3 py-2 fs-6 fw-bold">
+                        <i class="fa-solid fa-circle-check me-1"></i> Available for Request
+                    </span>
+                {% elif donation.status == 'ACCEPTED' %}
+                    <span class="badge badge-status-accepted px-3 py-2 fs-6 fw-bold">
+                        <i class="fa-solid fa-truck-fast me-1"></i> Reserved / Request Accepted
+                    </span>
+                {% elif donation.status == 'COMPLETED' %}
+                    <span class="badge badge-status-completed px-3 py-2 fs-6 fw-bold">
+                        <i class="fa-solid fa-check-double me-1"></i> Completed & Distributed
+                    </span>
+                {% else %}
+                    <span class="badge badge-status-cancelled px-3 py-2 fs-6 fw-bold">
+                        <i class="fa-solid fa-ban me-1"></i> {{ donation.get_status_display }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="row g-4">
+        <!-- Left: Image & Specs -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-white">
+                <div class="position-relative" style="height: 380px; background-color: #263238;">
+                    {% if donation.image %}
+                        <img src="{{ donation.image.url }}" alt="{{ donation.food_name }}" class="w-100 h-100 object-fit-cover">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80" alt="{{ donation.food_name }}" class="w-100 h-100 object-fit-cover">
+                    {% endif %}
+
+                    <!-- Dietary Badge -->
+                    {% if donation.food_type == 'VEG' %}
+                        <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 shadow">
+                            <i class="fa-solid fa-circle-dot me-1"></i> Vegetarian (Pure Veg)
+                        </span>
+                    {% elif donation.food_type == 'NON_VEG' %}
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 shadow">
+                            <i class="fa-solid fa-drumstick-bite me-1"></i> Non-Vegetarian
+                        </span>
+                    {% else %}
+                        <span class="badge bg-info text-dark position-absolute top-0 start-0 m-3 px-3 py-2 fs-6 shadow">
+                            <i class="fa-solid fa-seedling me-1"></i> 100% Vegan
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="card-body p-4">
+                    <span class="card-category-pill mb-2">{{ donation.get_category_display }}</span>
+                    <h4 class="fw-bold mb-3">About this Food Surplus</h4>
+                    <p class="text-muted leading-relaxed mb-4">{{ donation.description }}</p>
+
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-clipboard-list text-success me-2"></i> Food Specifications</h5>
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded-3 bg-light">
+                                <small class="text-muted d-block">Quantity Available</small>
+                                <strong class="fs-5 text-dark">{{ donation.quantity }} {{ donation.unit }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded-3 bg-light">
+                                <small class="text-muted d-block">Storage Requirement</small>
+                                <strong class="text-dark">{{ donation.get_storage_requirements_display }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded-3 bg-light">
+                                <small class="text-muted d-block">Preparation Time</small>
+                                <strong class="text-dark">{{ donation.preparation_datetime|date:"M d, Y - h:i A" }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="p-3 rounded-3 bg-light border-start border-4 border-danger">
+                                <small class="text-muted d-block">Must Consume By (Expiry)</small>
+                                <strong class="text-danger">{{ donation.expiry_datetime|date:"M d, Y - h:i A" }}</strong>
+                                {% if donation.is_expired %}
+                                    <span class="badge bg-danger ms-1">EXPIRED</span>
+                                {% else %}
+                                    <small class="text-muted d-block">({{ donation.hours_until_expiry }} hours remaining)</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner / Admin Controls -->
+            {% if is_owner %}
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-list-check text-success me-2"></i> Incoming NGO Claims ({{ all_requests|length }})</h5>
+                        {% if donation.status == 'AVAILABLE' %}
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'edit_donation' donation.id %}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </a>
+                                <a href="{% url 'cancel_donation' donation.id %}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this donation listing?');">
+                                    <i class="fa-solid fa-xmark"></i> Cancel
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {% if all_requests %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle small mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>NGO / Organization</th>
+                                        <th>Distribution Message</th>
+                                        <th>Planned Pickup</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for req in all_requests %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ req.ngo.profile.organization_name|default:req.ngo.username }}</strong>
+                                                <small class="d-block text-muted">{{ req.ngo.email }}</small>
+                                            </td>
+                                            <td>{{ req.request_message|truncatewords:10 }}</td>
+                                            <td>{{ req.estimated_pickup_time|default:"Immediate" }}</td>
+                                            <td>
+                                                <span class="badge {% if req.status == 'PENDING' %}bg-warning-subtle text-warning{% elif req.status == 'ACCEPTED' %}bg-success-subtle text-success{% elif req.status == 'COMPLETED' %}bg-primary-subtle text-primary{% else %}bg-danger-subtle text-danger{% endif %}">
+                                                    {{ req.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if req.status == 'PENDING' and donation.status == 'AVAILABLE' %}
+                                                    <div class="d-flex gap-1">
+                                                        <form method="post" action="{% url 'accept_request' req.id %}">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                                                        </form>
+                                                        <a href="{% url 'reject_request' req.id %}" class="btn btn-outline-danger btn-sm">Decline</a>
+                                                    </div>
+                                                {% elif req.status == 'ACCEPTED' and donation.status == 'ACCEPTED' %}
+                                                    <form method="post" action="{% url 'complete_request' req.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-primary btn-sm">Mark Picked Up</button>
+                                                    </form>
+                                                {% else %}
+                                                    <span class="text-muted small">&mdash;</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted small mb-0">No NGO claims submitted yet for this food batch.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Right: Donor Info & Claim Action -->
+        <div class="col-lg-5">
+            <!-- NGO Claim Card -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-hand-holding-heart text-accent me-2"></i> Food Claim System</h5>
+
+                {% if user.is_authenticated %}
+                    {% if user.profile.is_ngo %}
+                        {% if user_request %}
+                            <!-- NGO has already submitted a request -->
+                            <div class="alert {% if user_request.status == 'ACCEPTED' %}alert-success{% elif user_request.status == 'PENDING' %}alert-warning{% elif user_request.status == 'COMPLETED' %}alert-primary{% else %}alert-danger{% endif %} p-3 rounded-3 mb-3">
+                                <h6 class="fw-bold mb-1">Your Request Status: {{ user_request.get_status_display }}</h6>
+                                <p class="small mb-1">Submitted on {{ user_request.requested_at|date:"M d, Y - h:i A" }}</p>
+                                {% if user_request.donor_response_message %}
+                                    <div class="p-2 rounded bg-white mt-2 small">
+                                        <strong>Donor Note:</strong> {{ user_request.donor_response_message }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            {% if user_request.status == 'ACCEPTED' and donation.status == 'ACCEPTED' %}
+                                <div class="p-3 rounded-3 bg-light border mb-3">
+                                    <h6 class="fw-bold text-success mb-2"><i class="fa-solid fa-circle-check"></i> Coordinated Pickup</h6>
+                                    <p class="small text-muted mb-2">Please dispatch your transport to the location below and call the donor contact.</p>
+                                    <form method="post" action="{% url 'complete_request' user_request.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary w-100 fw-bold">
+                                            <i class="fa-solid fa-check-double me-1"></i> Confirm Food Picked Up
+                                        </button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        {% elif donation.status == 'AVAILABLE' and not donation.is_expired %}
+                            <!-- NGO can submit request -->
+                            <p class="text-muted small mb-3">
+                                Verified NGOs can claim this food batch. Submitting a claim will notify the donor immediately.
+                            </p>
+                            <form method="post" action="{% url 'create_request' donation.id %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Distribution Plan & Beneficiaries <span class="text-danger">*</span></label>
+                                    <textarea name="request_message" rows="3" class="form-control" placeholder="Describe where and to whom this food will be distributed..." required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Estimated Pickup Time <span class="text-danger">*</span></label>
+                                    <input type="text" name="estimated_pickup_time" class="form-control" placeholder="e.g. Today by 4:00 PM" required>
+                                </div>
+                                <button type="submit" class="btn btn-accent btn-lg w-100 fw-bold shadow-sm">
+                                    <i class="fa-solid fa-paper-plane me-2"></i> Submit Food Claim Request
+                                </button>
+                            </form>
+                        {% else %}
+                            <div class="alert alert-secondary mb-0 small">
+                                This food donation is currently not open for new claims.
+                            </div>
+                        {% endif %}
+                    {% elif user.profile.is_donor %}
+                        <div class="alert alert-info small mb-0">
+                            You are logged in as a <strong>Food Donor</strong>. Only registered NGOs can submit food claim requests.
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center p-3 bg-light rounded-3">
+                        <i class="fa-solid fa-lock text-muted fs-3 mb-2"></i>
+                        <h6 class="fw-bold">Sign In to Claim Food</h6>
+                        <p class="text-muted small mb-3">Are you a representative of a verified NGO, shelter, or community kitchen?</p>
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-sm px-4">Log In to Request</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Donor & Pickup Location Details -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-location-dot text-danger me-2"></i> Pickup Logistics</h5>
+                
+                <div class="p-3 rounded-3 bg-light mb-3">
+                    <small class="text-muted d-block">Pickup Address / Landmark</small>
+                    <strong class="text-dark">{{ donation.pickup_location }}</strong>
+                </div>
+
+                <div class="p-3 rounded-3 bg-light mb-3">
+                    <small class="text-muted d-block">Available Pickup Window</small>
+                    <strong class="text-dark">{{ donation.pickup_time }}</strong>
+                </div>
+
+                <hr>
+
+                <h6 class="fw-bold mb-2">Donor Information</h6>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-success text-white fw-bold d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                        {{ donation.donor.username|make_list|first|upper }}
+                    </div>
+                    <div>
+                        <strong class="d-block text-dark">{{ donation.donor.profile.organization_name|default:donation.donor.username }}</strong>
+                        <small class="text-muted">{{ donation.donor.profile.get_role_display }}</small>
+                    </div>
+                </div>
+
+                {% if is_owner or user_request.status == 'ACCEPTED' or user.is_superuser %}
+                    <div class="mt-3 pt-3 border-top small">
+                        <div class="mb-1"><strong>Contact Person:</strong> {{ donation.contact_person|default:donation.donor.get_full_name|default:donation.donor.username }}</div>
+                        <div><strong>Phone:</strong> <a href="tel:{{ donation.contact_phone|default:donation.donor.profile.phone }}" class="text-success text-decoration-none fw-bold">{{ donation.contact_phone|default:donation.donor.profile.phone|default:"Provided upon request" }}</a></div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

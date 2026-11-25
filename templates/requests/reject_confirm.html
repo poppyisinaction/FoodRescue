@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Decline Claim – FoodRescue{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="form-card shadow-lg">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-danger-subtle text-danger px-3 py-2 fw-semibold">
+                        <i class="fa-solid fa-ban me-1"></i> Decline Request
+                    </span>
+                </div>
+                <h3 class="fw-bold mb-1">Decline Food Request</h3>
+                <p class="text-muted small mb-4">You are declining the request from <strong>{{ food_request.ngo.profile.organization_name|default:food_request.ngo.username }}</strong> for {{ food_request.donation.food_name }}.</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label">Reason for Declining (Optional)</label>
+                        <textarea name="reject_reason" rows="3" class="form-control" placeholder="e.g., Pickup time not feasible, batch already reserved locally..."></textarea>
+                        <small class="text-muted">Providing a polite reason helps NGOs adjust their logistics.</small>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-danger btn-lg fw-bold px-4">
+                            Confirm Decline
+                        </button>
+                        <a href="{% url 'donation_detail' food_request.donation.id %}" class="btn btn-outline-secondary btn-lg">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

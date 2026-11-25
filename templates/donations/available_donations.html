@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Available Food Donations – FoodRescue{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="h2 fw-bold mb-1">Available Food Surplus</h1>
+                <p class="text-muted small mb-0">Browse real-time edible food batches listed by restaurants, hotels, and supermarkets for NGO collection.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                {% if user.is_authenticated and user.profile.is_donor or user.is_superuser %}
+                    <a href="{% url 'add_donation' %}" class="btn btn-primary shadow-sm">
+                        <i class="fa-solid fa-plus-circle me-1"></i> List New Surplus
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Filter and Search Bar -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+        <form method="get" action="{% url 'available_donations' %}" class="row g-2 align-items-center">
+            <!-- Search Text -->
+            <div class="col-lg-3 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" name="q" value="{{ search_query }}" class="form-control border-start-0" placeholder="Search food, donor, dish...">
+                </div>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="col-lg-2 col-md-6 col-6">
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    {% for cat_key, cat_val in categories %}
+                        <option value="{{ cat_key }}" {% if selected_category == cat_key %}selected{% endif %}>{{ cat_val }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Dietary / Food Type Filter -->
+            <div class="col-lg-2 col-md-4 col-6">
+                <select name="food_type" class="form-select">
+                    <option value="">Dietary Type</option>
+                    {% for type_key, type_val in food_types %}
+                        <option value="{{ type_key }}" {% if selected_food_type == type_key %}selected{% endif %}>{{ type_val }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Location Filter -->
+            <div class="col-lg-2 col-md-4 col-6">
+                <input type="text" name="location" value="{{ selected_location }}" class="form-control" placeholder="City / Area">
+            </div>
+
+            <!-- Sorting -->
+            <div class="col-lg-2 col-md-4 col-6">
+                <select name="sort" class="form-select">
+                    <option value="latest" {% if selected_sort == 'latest' %}selected{% endif %}>Latest Added</option>
+                    <option value="expiring" {% if selected_sort == 'expiring' %}selected{% endif %}>Expiring Soonest</option>
+                    <option value="quantity" {% if selected_sort == 'quantity' %}selected{% endif %}>Highest Quantity</option>
+                </select>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="col-lg-1 col-12 d-flex gap-1">
+                <button type="submit" class="btn btn-primary w-100" title="Apply Filters">
+                    <i class="fa-solid fa-filter"></i>
+                </button>
+                <a href="{% url 'available_donations' %}" class="btn btn-outline-secondary" title="Reset Filters">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Active Filter Indicators -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted small">
+            Showing <strong>{{ total_count }}</strong> available food listings
+            {% if search_query %} for "<em>{{ search_query }}</em>"{% endif %}
+        </span>
+        {% if search_query or selected_category or selected_food_type or selected_location %}
+            <a href="{% url 'available_donations' %}" class="small text-danger text-decoration-none">
+                <i class="fa-solid fa-xmark me-1"></i> Clear all filters
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Listings Grid -->
+    {% if donations %}
+        <div class="row g-4">
+            {% for donation in donations %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="food-card">
+                        <div class="food-card-img-wrapper">
+                            {% if donation.image %}
+                                <img src="{{ donation.image.url }}" alt="{{ donation.food_name }}" class="food-card-img">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" alt="{{ donation.food_name }}" class="food-card-img">
+                            {% endif %}
+                            
+                            <!-- Food type badge -->
+                            {% if donation.food_type == 'VEG' %}
+                                <span class="food-type-badge food-type-veg">
+                                    <i class="fa-solid fa-circle-dot"></i> Veg
+                                </span>
+                            {% elif donation.food_type == 'NON_VEG' %}
+                                <span class="food-type-badge food-type-nonveg">
+                                    <i class="fa-solid fa-drumstick-bite"></i> Non-Veg
+                                </span>
+                            {% else %}
+                                <span class="food-type-badge food-type-vegan">
+                                    <i class="fa-solid fa-seedling"></i> Vegan
+                                </span>
+                            {% endif %}
+
+                            <span class="urgency-badge">
+                                <i class="fa-regular fa-clock me-1"></i> Expiry: {{ donation.expiry_datetime|date:"M d, H:i" }}
+                            </span>
+                        </div>
+
+                        <div class="p-3 d-flex flex-column flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <span class="card-category-pill">{{ donation.get_category_display }}</span>
+                                <span class="badge bg-light text-muted border small">{{ donation.get_storage_requirements_display }}</span>
+                            </div>
+
+                            <h5 class="fw-bold mb-2">{{ donation.food_name }}</h5>
+                            <p class="text-muted small mb-3 flex-grow-1">{{ donation.description|truncatewords:18 }}</p>
+
+                            <div class="p-2 px-3 rounded-3 bg-light small mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Quantity:</span>
+                                    <span class="fw-bold text-dark">{{ donation.quantity }} {{ donation.unit }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Pickup Window:</span>
+                                    <span class="fw-semibold text-dark">{{ donation.pickup_time|truncatewords:4 }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Donor:</span>
+                                    <span class="fw-semibold text-success">{{ donation.donor.profile.organization_name|default:donation.donor.username }}</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'donation_detail' donation.id %}" class="btn btn-primary w-100 fw-semibold">
+                                    <i class="fa-solid fa-eye me-1"></i> View & Claim Food
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="p-5 text-center bg-white rounded-4 border shadow-sm my-4">
+            <div class="display-4 text-muted mb-3 opacity-50"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <h4 class="fw-bold">No available food donations matched your filters</h4>
+            <p class="text-muted mb-4">Try clearing some search filters or check back shortly as donors add fresh surplus batches continually.</p>
+            <a href="{% url 'available_donations' %}" class="btn btn-outline-primary">
+                <i class="fa-solid fa-rotate-left me-1"></i> Reset All Filters
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

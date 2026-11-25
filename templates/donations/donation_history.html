@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Donation History & Audit Ledger – FoodRescue{% endblock %}
+
+{% block content %}
+<div class="py-4 bg-white border-bottom">
+    <div class="container">
+        <h1 class="h2 fw-bold mb-1"><i class="fa-solid fa-clock-rotate-left text-success me-2"></i> Food Rescue History</h1>
+        <p class="text-muted small mb-0">Transparent historical archive of completed food transfers, verification notes, and quantities saved from landfills.</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Search Bar -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+        <form method="get" action="{% url 'donation_history' %}" class="row g-2 align-items-center">
+            <div class="col-md-9">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" name="q" value="{{ search_query }}" class="form-control border-start-0" placeholder="Search by food name, donor, receiver NGO, notes...">
+                </div>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100 fw-semibold">
+                    <i class="fa-solid fa-filter me-1"></i> Search History
+                </button>
+                {% if search_query %}
+                    <a href="{% url 'donation_history' %}" class="btn btn-outline-secondary">Reset</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    {% if history_records %}
+        <div class="table-custom table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Food Batch</th>
+                        <th>Donor Organization</th>
+                        <th>Receiver NGO</th>
+                        <th>Quantity Rescued</th>
+                        <th>Date Completed</th>
+                        <th>Pickup Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in history_records %}
+                        <tr>
+                            <td>
+                                <strong class="text-dark">{{ record.donation.food_name }}</strong>
+                                <span class="badge bg-light text-muted border small d-block mt-1" style="width: fit-content;">{{ record.donation.get_category_display }}</span>
+                            </td>
+                            <td>
+                                <strong>{{ record.donor.profile.organization_name|default:record.donor.username }}</strong>
+                                <small class="text-muted d-block">{{ record.donor.email }}</small>
+                            </td>
+                            <td>
+                                <strong class="text-success">{{ record.receiver.profile.organization_name|default:record.receiver.username }}</strong>
+                                <small class="text-muted d-block">{{ record.receiver.profile.city|default:"Mumbai" }}</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success fs-6 fw-bold">
+                                    {{ record.quantity }} {{ record.unit }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-dark fw-semibold">{{ record.completed_at|date:"M d, Y" }}</span>
+                                <small class="text-muted d-block">{{ record.completed_at|date:"h:i A" }}</small>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ record.notes|default:"Food successfully rescued and distributed to shelter." }}</small>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="p-5 text-center bg-white rounded-4 border shadow-sm my-4">
+            <i class="fa-solid fa-clock-rotate-left display-4 text-muted mb-3 opacity-50"></i>
+            <h4 class="fw-bold">No completed donation records yet</h4>
+            <p class="text-muted mb-4">Once food batches are claimed by NGOs and marked completed, they will appear here in the verified impact ledger.</p>
+            <a href="{% url 'available_donations' %}" class="btn btn-primary">
+                Browse Available Donations
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

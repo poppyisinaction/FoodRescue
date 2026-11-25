@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Notifications – FoodRescue{% endblock %}
+
+{% block content %}
+<div class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h2 fw-bold mb-1"><i class="fa-solid fa-bell text-success me-2"></i> Notifications Center</h1>
+                <p class="text-muted small mb-0">Platform alerts regarding your food listings, claims, and status updates.</p>
+            </div>
+            <a href="{% url 'mark_all_read' %}" class="btn btn-outline-success btn-sm">
+                <i class="fa-solid fa-check-double me-1"></i> Mark All as Read
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        {% if notifications %}
+            <div class="list-group list-group-flush">
+                {% for notif in notifications %}
+                    <div id="notification-item-{{ notif.id }}" class="list-group-item px-3 py-3 rounded-3 mb-2 border {% if not notif.is_read %}bg-light border-success-subtle{% else %}opacity-75{% endif %}">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <h6 class="mb-1 fw-bold text-dark">
+                                {% if notif.notification_type == 'REQUEST' %}
+                                    <i class="fa-solid fa-inbox text-warning me-2"></i>
+                                {% elif notif.notification_type == 'ACCEPT' %}
+                                    <i class="fa-solid fa-circle-check text-success me-2"></i>
+                                {% elif notif.notification_type == 'COMPLETE' %}
+                                    <i class="fa-solid fa-award text-primary me-2"></i>
+                                {% elif notif.notification_type == 'REJECT' %}
+                                    <i class="fa-solid fa-circle-xmark text-danger me-2"></i>
+                                {% elif notif.notification_type == 'CANCEL' %}
+                                    <i class="fa-solid fa-ban text-danger me-2"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-bell text-secondary me-2"></i>
+                                {% endif %}
+                                {{ notif.title }}
+                            </h6>
+                            <small class="text-muted">{{ notif.created_at|timesince }} ago</small>
+                        </div>
+                        <p class="mb-2 text-muted small">{{ notif.message }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            {% if notif.link %}
+                                <a href="{{ notif.link }}" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.78rem;">
+                                    View Action &rarr;
+                                </a>
+                            {% else %}
+                                <span></span>
+                            {% endif %}
+                            {% if not notif.is_read %}
+                                <button class="btn btn-sm btn-link text-muted p-0 text-decoration-none btn-mark-notification-read" data-notification-id="{{ notif.id }}" style="font-size: 0.78rem;">
+                                    Mark as read
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="fa-regular fa-bell-slash fs-2 mb-2 text-secondary opacity-50"></i>
+                <h5 class="fw-bold">No notifications yet</h5>
+                <p class="small mb-0">You're all caught up! New donation requests and updates will appear here.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

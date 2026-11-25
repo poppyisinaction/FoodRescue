@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FoodRescue AI Conversation History – FoodRescue{% endblock %}
+
+{% block content %}
+<div class="py-4 bg-white border-bottom">
+    <div class="container">
+        <h1 class="h2 fw-bold mb-1"><i class="fa-solid fa-robot text-success me-2"></i> FoodRescue AI History</h1>
+        <p class="text-muted small mb-0">Record of questions, food safety inquiries, and guidance provided by your AI assistant.</p>
+    </div>
+</div>
+
+<div class="container py-4">
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        {% if chat_messages %}
+            <div class="d-flex flex-column gap-3">
+                {% for chat in chat_messages %}
+                    <div class="p-3 rounded-3 border bg-light">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-secondary-subtle text-secondary small">
+                                <i class="fa-regular fa-clock me-1"></i> {{ chat.created_at|date:"M d, Y - h:i A" }}
+                            </span>
+                            {% if chat.used_llm %}
+                                <span class="badge bg-success-subtle text-success small">LLM Enhanced</span>
+                            {% else %}
+                                <span class="badge bg-light text-muted border small">Expert Rule Engine</span>
+                            {% endif %}
+                        </div>
+                        <div class="mb-2">
+                            <strong class="text-dark d-block">You:</strong>
+                            <p class="text-muted small mb-0">{{ chat.message }}</p>
+                        </div>
+                        <div class="p-2 rounded bg-white border-start border-3 border-success small">
+                            <strong class="text-success d-block mb-1">FoodRescue AI:</strong>
+                            <div class="text-dark">{{ chat.response|linebreaksbr }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="fa-solid fa-comments fs-2 mb-2 text-secondary opacity-50"></i>
+                <h5 class="fw-bold">No saved chat history</h5>
+                <p class="small mb-3">Ask FoodRescue AI questions using the floating assistant widget at the bottom right.</p>
+                <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('chatbot-toggle-btn').click()">
+                    Open FoodRescue AI
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

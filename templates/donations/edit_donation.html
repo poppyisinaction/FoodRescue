@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Donation – {{ donation.food_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card shadow-lg">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold mb-1">Edit Food Donation</h3>
+                        <p class="text-muted small mb-0">Update listing details for "{{ donation.food_name }}".</p>
+                    </div>
+                    <a href="{% url 'donation_detail' donation.id %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back to Listing
+                    </a>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Food Title / Item Name</label>
+                            {{ form.food_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Category</label>
+                            {{ form.category }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Dietary Type</label>
+                            {{ form.food_type }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Quantity</label>
+                            {{ form.quantity }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Unit</label>
+                            {{ form.unit }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Preparation Time</label>
+                            {{ form.preparation_datetime }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Expiry Time</label>
+                            {{ form.expiry_datetime }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Pickup Location</label>
+                            {{ form.pickup_location }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Available Pickup Hours</label>
+                            {{ form.pickup_time }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Storage Requirements</label>
+                            {{ form.storage_requirements }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Replace Image (optional)</label>
+                            {{ form.image }}
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold px-4">
+                                <i class="fa-solid fa-floppy-disk me-2"></i> Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Profile – FoodRescue{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Sidebar Summary -->
+        <div class="col-lg-4">
+            <div class="form-card text-center">
+                {% if profile.profile_image %}
+                    <img src="{{ profile.profile_image.url }}" alt="{{ user.username }}" class="sidebar-avatar mx-auto">
+                {% else %}
+                    <div class="sidebar-avatar-placeholder mx-auto">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                {% endif %}
+
+                <h5 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h5>
+                <p class="text-muted small mb-2">@{{ user.username }}</p>
+
+                <div class="mb-3">
+                    <span class="badge bg-success-subtle text-success px-3 py-2 fw-semibold">
+                        {{ profile.get_role_display }}
+                    </span>
+                </div>
+
+                <!-- Verification Status -->
+                <div class="p-3 rounded-3 {% if profile.verification_status == 'VERIFIED' %}bg-success-subtle border border-success border-opacity-25 text-success{% elif profile.verification_status == 'REJECTED' %}bg-danger-subtle border border-danger text-danger{% else %}bg-warning-subtle border border-warning text-dark{% endif %} text-start small mb-3">
+                    <div class="d-flex align-items-center gap-2 fw-bold mb-1">
+                        {% if profile.verification_status == 'VERIFIED' %}
+                            <i class="fa-solid fa-circle-check fs-5"></i> Verified Entity
+                        {% elif profile.verification_status == 'REJECTED' %}
+                            <i class="fa-solid fa-circle-xmark fs-5"></i> Verification Rejected
+                        {% else %}
+                            <i class="fa-solid fa-clock-rotate-left fs-5"></i> Verification Pending
+                        {% endif %}
+                    </div>
+                    <span>
+                        {% if profile.verification_status == 'VERIFIED' %}
+                            Your credentials have been verified by platform administrators. You enjoy priority dispatch.
+                        {% elif profile.verification_status == 'REJECTED' %}
+                            Please reach out via Contact Us to submit official entity paperwork.
+                        {% else %}
+                            Your profile documents are currently in review by administrators. You can still use the platform.
+                        {% endif %}
+                    </span>
+                </div>
+
+                <ul class="list-group list-group-flush text-start small">
+                    <li class="list-group-item px-0 d-flex justify-content-between">
+                        <span class="text-muted">Email:</span>
+                        <span class="fw-semibold">{{ user.email }}</span>
+                    </li>
+                    <li class="list-group-item px-0 d-flex justify-content-between">
+                        <span class="text-muted">Phone:</span>
+                        <span class="fw-semibold">{{ profile.phone|default:"Not set" }}</span>
+                    </li>
+                    <li class="list-group-item px-0 d-flex justify-content-between">
+                        <span class="text-muted">City:</span>
+                        <span class="fw-semibold">{{ profile.city|default:"Mumbai" }}</span>
+                    </li>
+                    <li class="list-group-item px-0 d-flex justify-content-between">
+                        <span class="text-muted">Member Since:</span>
+                        <span class="fw-semibold">{{ user.date_joined|date:"M Y" }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div class="col-lg-8">
+            <div class="form-card">
+                <h4 class="fw-bold mb-3"><i class="fa-solid fa-user-pen text-success me-2"></i> Update Profile Information</h4>
+                <p class="text-muted small mb-4">Keep your organization and contact details up-to-date so food collections run smoothly.</p>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <h6 class="fw-bold border-bottom pb-2 mb-3 text-success">Personal Details</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            {{ u_form.first_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            {{ u_form.last_name }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Email Address</label>
+                            {{ u_form.email }}
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold border-bottom pb-2 mb-3 text-success">Organization & Location</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Organization Name</label>
+                            {{ p_form.organization_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Organization Type</label>
+                            {{ p_form.organization_type }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number</label>
+                            {{ p_form.phone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">City</label>
+                            {{ p_form.city }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Address</label>
+                            {{ p_form.address }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Bio / Cause Summary</label>
+                            {{ p_form.bio }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Profile / Logo Image</label>
+                            {{ p_form.profile_image }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary fw-bold px-4">
+                        <i class="fa-solid fa-floppy-disk me-2"></i> Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}NGO Dashboard – FoodRescue{% endblock %}
+
+{% block content %}
+<div class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center">
+            <div>
+                <h1 class="h2 fw-bold mb-1"><i class="fa-solid fa-hand-holding-heart text-success me-2"></i> NGO & Receiver Dashboard</h1>
+                <p class="text-muted small mb-0">Welcome back, <strong>{{ user.profile.organization_name|default:user.username }}</strong>. Track your claimed donations and discover newly available food batches.</p>
+            </div>
+            <div class="mt-3 mt-md-0 d-flex gap-2">
+                <a href="{% url 'available_donations' %}" class="btn btn-primary shadow-sm">
+                    <i class="fa-solid fa-utensils me-1"></i> Browse Available Food
+                </a>
+                <a href="{% url 'donation_history' %}" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-clock-rotate-left me-1"></i> Audit History
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4">
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-sm-6">
+            <div class="stat-box">
+                <div class="stat-number">{{ total_available_food }}</div>
+                <div class="stat-label">Available Batches</div>
+                <small class="text-muted">Ready for pickup right now</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="stat-box" style="border-top-color: #F4A340;">
+                <div class="stat-number text-accent">{{ pending_requests }}</div>
+                <div class="stat-label">Pending Claims</div>
+                <small class="text-muted">Under donor review</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="stat-box" style="border-top-color: #2E7D32;">
+                <div class="stat-number text-success">{{ accepted_requests }}</div>
+                <div class="stat-label">Accepted & Assigned</div>
+                <small class="text-muted">Ready for immediate pickup</small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <div class="stat-box" style="border-top-color: #1565C0;">
+                <div class="stat-number" style="color: #1565C0;">{{ completed_pickups }}</div>
+                <div class="stat-label">Completed Pickups</div>
+                <small class="text-muted">Distributed to beneficiaries</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Claims Tracking Table -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0"><i class="fa-solid fa-truck-ramp-box text-accent me-2"></i> Your Active Food Requests</h5>
+            <span class="badge bg-light text-muted border small">{{ my_requests|length }} Total Requests</span>
+        </div>
+
+        {% if my_requests %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Food Batch</th>
+                            <th>Donor Contact</th>
+                            <th>Pickup Location</th>
+                            <th>Claimed On</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in my_requests %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'donation_detail' req.donation.id %}" class="fw-bold text-dark text-decoration-none">
+                                        {{ req.donation.food_name }}
+                                    </a>
+                                    <small class="text-muted d-block">{{ req.donation.quantity }} {{ req.donation.unit }} &bull; {{ req.donation.get_food_type_display }}</small>
+                                </td>
+                                <td>
+                                    <strong>{{ req.donation.donor.profile.organization_name|default:req.donation.donor.username }}</strong>
+                                    {% if req.status == 'ACCEPTED' %}
+                                        <small class="d-block text-success fw-bold"><i class="fa-solid fa-phone"></i> {{ req.donation.contact_phone|default:req.donation.donor.profile.phone }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ req.donation.pickup_location|truncatewords:6 }}</small>
+                                </td>
+                                <td>
+                                    <small class="text-muted">{{ req.requested_at|date:"M d, H:i" }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge {% if req.status == 'PENDING' %}badge-status-pending{% elif req.status == 'ACCEPTED' %}badge-status-accepted{% elif req.status == 'COMPLETED' %}badge-status-completed{% else %}badge-status-cancelled{% endif %}">
+                                        {{ req.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if req.status == 'ACCEPTED' and req.donation.status == 'ACCEPTED' %}
+                                        <form method="post" action="{% url 'complete_request' req.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-primary fw-semibold">
+                                                <i class="fa-solid fa-check"></i> Confirm Picked Up
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <a href="{% url 'donation_detail' req.donation.id %}" class="btn btn-sm btn-outline-secondary">
+                                            View
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="fa-solid fa-utensils fs-2 mb-2 text-secondary opacity-50"></i>
+                <p class="small mb-3">You haven't requested any food donations yet.</p>
+                <a href="{% url 'available_donations' %}" class="btn btn-primary btn-sm">Explore Available Food Batches</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Fresh Recommendations -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0"><i class="fa-solid fa-bell text-warning me-2"></i> Recently Added Available Food</h5>
+            <a href="{% url 'available_donations' %}" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+
+        {% if recommended_food %}
+            <div class="row g-3">
+                {% for item in recommended_food %}
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-3 border bg-light h-100 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="card-category-pill">{{ item.get_category_display }}</span>
+                                <span class="badge bg-danger-subtle text-danger small">Exp: {{ item.expiry_datetime|date:"M d, H:i" }}</span>
+                            </div>
+                            <h6 class="fw-bold mb-1">{{ item.food_name }}</h6>
+                            <p class="text-muted small mb-2 flex-grow-1">{{ item.description|truncatewords:10 }}</p>
+                            <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                                <span class="fw-bold small">{{ item.quantity }} {{ item.unit }}</span>
+                                <a href="{% url 'donation_detail' item.id %}" class="btn btn-sm btn-primary">Claim</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted small mb-0">No new batches available at this second. Check back soon!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
